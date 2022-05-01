@@ -33,17 +33,22 @@ print(len(measurements))
 
 #Capture left and right camera images as well
 for line in lines:
+    image_cent_path = line[0]
     image_left_path = line[1]
     image_right_path = line[2]
+    cent_fname = image_cent_path.split('/')[-1]
     left_fname = image_left_path.split('/')[-1]
     right_fname = image_right_path.split('/')[-1]
     path = 'data/IMG/'
     correction = 0.2
+    cent_img = cv2.imread(path+cent_fname)
     left_img = cv2.imread(path+left_fname)
     right_img = cv2.imread(path+right_fname)
     steering_center = float(line[3])
     steering_left = steering_center + correction
     steering_right = steering_center - correction
+    images.append(cent_img)
+    measurements.append(steering_center)
     images.append(left_img)
     measurements.append(steering_left)
     images.append(right_img)
@@ -51,37 +56,7 @@ for line in lines:
 
 lines = []
 
-'''
-with open('/opt/carnd_p3/new_data/driving_log.csv') as csvfile:
-    reader = csv.reader(csvfile)
-    next(reader)
-    for line in reader:
-        lines.append(line)
-for line in lines:
-    source_path = line[0]
-    filename = source_path.split('/')[-1]
-    current_path = '/opt/carnd_p3/new_data/IMG/' + filename
-    image = cv2.imread(current_path)
-    images.append(image)
-    measurement = float(line[3])
-    measurements.append(measurement)
-    steering_center = float(line[3])
-    correction = 0.1
-    lpath = line[1]
-    rpath = line[2]
-    lname = lpath.split('/')[-1]
-    rname = rpath.split('/')[-1]
-    path = '/opt/carnd_p3/new_data/IMG/'
-    #print(path+lname)
-    limg = cv2.imread(path+lname)
-    rimg = cv2.imread(path+rname)
-    steering_left = steering_center + correction
-    steering_right = steering_center - correction
-    images.append(limg)
-    measurements.append(steering_left)
-    images.append(rimg)
-    measurements.append(steering_right)
-'''
+
 #print(len(images))
 #print(len(measurements))
 #
@@ -92,8 +67,8 @@ augmented_images, augmented_measurements = [], []
 for image, measurement in zip(images, measurements):
     augmented_images.append(image)
     augmented_measurements.append(measurement)
-#    augmented_images.append(cv2.flip(image,1))
-#    augmented_measurements.append(measurement*-1)
+    augmented_images.append(cv2.flip(image,1))
+    augmented_measurements.append(measurement*-1.0)
 
 #print(len(augmented_images))
 
